@@ -1,0 +1,30 @@
+<Project>
+  <Import Project="version.props" />
+
+  <PropertyGroup>
+    <Product>Zero Logging</Product>
+    <Authors>RainingNight</Authors>
+    <Company>ZeroBoot</Company>
+    <Copyright>Copyright © ZeroBoot</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/ZeroBoot/Logging/main/LICENSE</PackageLicenseUrl>
+    <!-- The SPDX name for the source license. See https://spdx.org/licenses/. -->
+    <PackageLicenseType>MIT</PackageLicenseType>
+    <!--
+      Suppress a warning about upcoming deprecation of PackageLicenseUrl. When embedding licenses are supported,
+      replace PackageLicenseUrl with PackageLicenseExpression.
+    -->
+    <NoWarn>$(NoWarn);NU5125</NoWarn>
+    <!-- Suppress warnings about using SemVer 2.0. -->
+    <NoWarn>$(NoWarn);NU5105</NoWarn>
+
+    <PackageProjectUrl>https://github.com/ZeroBoot/Logging</PackageProjectUrl>
+
+    <RepositoryUrl>https://github.com/ZeroBoot/Logging</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <!-- Compilation options -->
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>

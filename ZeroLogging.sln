@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31025.218
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6C84B979-0416-49DC-910B-50A3245C98D4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zero.Extensions.Logging.Console", "src\Zero.Extensions.Logging.Console\Zero.Extensions.Logging.Console.csproj", "{30B55DBB-0D00-4975-8360-32016B420372}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{30B55DBB-0D00-4975-8360-32016B420372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30B55DBB-0D00-4975-8360-32016B420372}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30B55DBB-0D00-4975-8360-32016B420372}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30B55DBB-0D00-4975-8360-32016B420372}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{30B55DBB-0D00-4975-8360-32016B420372} = {6C84B979-0416-49DC-910B-50A3245C98D4}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7E08B1C8-43AB-49A0-AE52-E7B859124815}
+	EndGlobalSection
+EndGlobal
