@@ -64,16 +64,19 @@ namespace Zero.Extensions.Logging.Console
 
                     if (logEntry.State != null)
                     {
-                        writer.WriteStartObject(nameof(logEntry.State));
-                        writer.WriteString("Message", logEntry.State.ToString());
+                        // writer.WriteString("Message", logEntry.State.ToString());
                         if (logEntry.State is IReadOnlyCollection<KeyValuePair<string, object>> stateProperties)
                         {
-                            foreach (KeyValuePair<string, object> item in stateProperties)
+                            if (stateProperties.Count > 1)
                             {
-                                WriteItem(writer, item);
+                                writer.WriteStartObject(nameof(logEntry.State));
+                                foreach (KeyValuePair<string, object> item in stateProperties)
+                                {
+                                    WriteItem(writer, item);
+                                }
+                                writer.WriteEndObject();
                             }
                         }
-                        writer.WriteEndObject();
                     }
                     WriteScopeInformation(writer, scopeProvider);
                     writer.WriteEndObject();
@@ -142,7 +145,6 @@ namespace Zero.Extensions.Logging.Console
                         stringScopes.Add(ToInvariantString(scope));
                     }
                 }, writer);
-
 
                 if (customScopes.Any())
                 {
