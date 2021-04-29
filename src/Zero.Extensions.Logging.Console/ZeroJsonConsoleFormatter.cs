@@ -113,12 +113,12 @@ namespace Zero.Extensions.Logging.Console
                 {
                     if (scope is IEnumerable<KeyValuePair<string, object>> scopeItems)
                     {
-
                         var scopeName = scope.GetType().Name;
                         if (scopeName.EndsWith("LogScope"))
                         {
                             scopeName = scopeName[0..^8];
                             writer.WriteStartObject(scopeName);
+                            writer.WriteString("Message", scope.ToString());
                             foreach (KeyValuePair<string, object> item in scopeItems)
                             {
                                 WriteItem(state, item);
@@ -127,9 +127,13 @@ namespace Zero.Extensions.Logging.Console
                         }
                         else
                         {
+                            customScopes.Add("Message", scope.ToString());
                             foreach (KeyValuePair<string, object> item in scopeItems)
                             {
-                                customScopes.Add(item.Key, item.Value);
+                                if (item.Key != "{OriginalFormat}")
+                                {
+                                    customScopes.Add(item.Key, item.Value);
+                                }
                             }
                         }
                     }

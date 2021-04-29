@@ -11,7 +11,7 @@ Extensions `Microsoft.Extensions.Logging.Console`, grouping scope property for d
 Install the _Zero.Logging.Console_ [NuGet package](https://www.nuget.org/packages/Zero.Logging.Console) into your app:
 
 ```powershell
-dotnet add package Zero.Logging.Console --version 5.0.0
+dotnet add package Zero.Logging.Console --version 5.0.2
 ```
 
 ### Configure
@@ -27,6 +27,7 @@ dotnet add package Zero.Logging.Console --version 5.0.0
     },
     "Console": {
         "FormatterName": "json",
+        "IncludeScopes": true,
         "FormatterOptions": {
             "IncludeScopes": true
         }
@@ -64,14 +65,17 @@ public class LoggingController : ControllerBase
     [HttpGet]
     public string Get()
     {
-        _logger.LogInformation("test");
+        using (_logger.BeginScope("myScope"))
+        {
+            _logger.LogInformation("test1");
+        }
 
-        using (_logger.BeginScope(new Dictionary<string, string> { ["k1"] = "v1", ["k2"] = "v2" }))
+        using (_logger.BeginScope("OrderId : {orderId}, UserId : {userId}", 1, 2))
         {
             _logger.LogInformation("test2");
         }
 
-        using (_logger.BeginScope("myScope"))
+        using (_logger.BeginScope(new OrderLogScope(3, 4)))
         {
             _logger.LogInformation("test3");
         }
@@ -81,101 +85,90 @@ public class LoggingController : ControllerBase
 }
 ```
 
-That's it! Access the `/logging`，you will see log output like:
+That's it! Access the [http://localhost:5000/logging](http://localhost:5000/logging)，you will see log output like:
 
 ```json
 {
-    "EventId": 0,
-    "LogLevel": "Information",
-    "Category": "WebApiDemo.Controllers.LoggingController",
-    "Message": "test",
-    "State": {
-        "Message": "test",
-        "{OriginalFormat}": "test"
+  "EventId": 0,
+  "LogLevel": "Information",
+  "Category": "Test",
+  "Message": "test1",
+  "Scope": {
+    "Activity": {
+      "Message": "SpanId:fc1e2bb7dd8dba4f, TraceId:f62fde06a229b14e8ba9e8a51512814b, ParentId:0000000000000000",
+      "SpanId": "fc1e2bb7dd8dba4f",
+      "TraceId": "f62fde06a229b14e8ba9e8a51512814b",
+      "ParentId": "0000000000000000"
     },
-    "Scope": {
-        "Activity": {
-            "SpanId": "e868c0ea2c961510",
-            "TraceId": "fb74e90e8c61ff51931fd4ba8e4e71bf",
-            "ParentId": "0000000000000000"
-        },
-        "Connection": {
-            "ConnectionId": "0HM7DRIKFU2Q3"
-        },
-        "Hosting": {
-            "RequestId": "0HM7DRIKFU2Q3:00000003",
-            "RequestPath": "/logging"
-        },
-        "Action": {
-            "ActionId": "c4d35f4e-f7d9-49f1-933d-a4d8566beb05",
-            "ActionName": "WebApiDemo.Controllers.LoggingController.Get (WebApiDemo)"
-        }
-    }
-}                                        
-
+    "Connection": {
+      "Message": "ConnectionId:0HM8AVNE070U2",
+      "ConnectionId": "0HM8AVNE070U2"
+    },
+    "Hosting": {
+      "Message": "RequestPath:/ RequestId:0HM8AVNE070U2:00000002",
+      "RequestId": "0HM8AVNE070U2:00000002",
+      "RequestPath": "/"
+    },
+    "Plain": [
+      "myScope"
+    ]
+  }
+}
 {
-    "EventId": 0,
-    "LogLevel": "Information",
-    "Category": "WebApiDemo.Controllers.LoggingController",
-    "Message": "test2",
-    "State": {
-        "Message": "test2",
-        "{OriginalFormat}": "test2"
+  "EventId": 0,
+  "LogLevel": "Information",
+  "Category": "Test",
+  "Message": "test2",
+  "Scope": {
+    "Activity": {
+      "Message": "SpanId:fc1e2bb7dd8dba4f, TraceId:f62fde06a229b14e8ba9e8a51512814b, ParentId:0000000000000000",
+      "SpanId": "fc1e2bb7dd8dba4f",
+      "TraceId": "f62fde06a229b14e8ba9e8a51512814b",
+      "ParentId": "0000000000000000"
     },
-    "Scope": {
-        "Activity": {
-            "SpanId": "e868c0ea2c961510",
-            "TraceId": "fb74e90e8c61ff51931fd4ba8e4e71bf",
-            "ParentId": "0000000000000000"
-        },
-        "Connection": {
-            "ConnectionId": "0HM7DRIKFU2Q3"
-        },
-        "Hosting": {
-            "RequestId": "0HM7DRIKFU2Q3:00000003",
-            "RequestPath": "/logging"
-        },
-        "Action": {
-            "ActionId": "c4d35f4e-f7d9-49f1-933d-a4d8566beb05",
-            "ActionName": "WebApiDemo.Controllers.LoggingController.Get (WebApiDemo)"
-        },
-        "Custom": {
-            "k1": "v1",
-            "k2": "v2"
-        }
+    "Connection": {
+      "Message": "ConnectionId:0HM8AVNE070U2",
+      "ConnectionId": "0HM8AVNE070U2"
+    },
+    "Hosting": {
+      "Message": "RequestPath:/ RequestId:0HM8AVNE070U2:00000002",
+      "RequestId": "0HM8AVNE070U2:00000002",
+      "RequestPath": "/"
+    },
+    "Custom": {
+      "Message": "OrderId : 1, UserId : 2",
+      "orderId": 1,
+      "userId": 2
     }
-}                      
-
+  }
+}
 {
-    "EventId": 0,
-    "LogLevel": "Information",
-    "Category": "WebApiDemo.Controllers.LoggingController",
-    "Message": "test3",
-    "State": {
-        "Message": "test3",
-        "{OriginalFormat}": "test3"
+  "EventId": 0,
+  "LogLevel": "Information",
+  "Category": "Test",
+  "Message": "test3",
+  "Scope": {
+    "Activity": {
+      "Message": "SpanId:fc1e2bb7dd8dba4f, TraceId:f62fde06a229b14e8ba9e8a51512814b, ParentId:0000000000000000",
+      "SpanId": "fc1e2bb7dd8dba4f",
+      "TraceId": "f62fde06a229b14e8ba9e8a51512814b",
+      "ParentId": "0000000000000000"
     },
-    "Scope": {
-        "Activity": {
-            "SpanId": "e868c0ea2c961510",
-            "TraceId": "fb74e90e8c61ff51931fd4ba8e4e71bf",
-            "ParentId": "0000000000000000"
-        },
-        "Connection": {
-            "ConnectionId": "0HM7DRIKFU2Q3"
-        },
-        "Hosting": {
-            "RequestId": "0HM7DRIKFU2Q3:00000003",
-            "RequestPath": "/logging"
-        },
-        "Action": {
-            "ActionId": "c4d35f4e-f7d9-49f1-933d-a4d8566beb05",
-            "ActionName": "WebApiDemo.Controllers.LoggingController.Get (WebApiDemo)"
-        },
-        "Plain": [
-            "myScope"
-        ]
+    "Connection": {
+      "Message": "ConnectionId:0HM8AVNE070U2",
+      "ConnectionId": "0HM8AVNE070U2"
+    },
+    "Hosting": {
+      "Message": "RequestPath:/ RequestId:0HM8AVNE070U2:00000002",
+      "RequestId": "0HM8AVNE070U2:00000002",
+      "RequestPath": "/"
+    },
+    "Order": {
+      "Message": "OrderId:3 UserId:4",
+      "OrderId": 3,
+      "UserId": 4
     }
+  }
 }
 ```
 

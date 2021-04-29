@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -28,9 +29,23 @@ namespace WebApp
                 endpoints.MapGet("/", async context =>
                 {
                     var logger = context.RequestServices.GetService<ILoggerFactory>().CreateLogger("Test");
-                    logger.LogInformation("Begin request.");
+
+                    using (logger.BeginScope("myScope"))
+                    {
+                        logger.LogInformation("test1");
+                    }
+
+                    using (logger.BeginScope("OrderId : {orderId}, UserId : {userId}", 1, 2))
+                    {
+                        logger.LogInformation("test2");
+                    }
+
+                    using (logger.BeginScope(new OrderLogScope(3, 4)))
+                    {
+                        logger.LogInformation("test3");
+                    }
+
                     await context.Response.WriteAsync("Hello World!");
-                    logger.LogInformation("End request, Request took {milliseconds} ms", 10);
                 });
             });
         }
